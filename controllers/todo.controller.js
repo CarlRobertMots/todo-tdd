@@ -31,8 +31,32 @@ const getTodoById = async (req, res, next) => {
     next(error)
     }
 }
+
+const updateTodo = async (req, res, next) => {
+  try {
+    const updatedTodo = await TodoModel.findByIdAndUpdate(
+      req.params.todoId,
+      req.body,
+      { new: true, useFindAndModify: false }
+    );
+    if (!updatedTodo) { 
+      return res.status(404).send();
+    }
+    res.status(200).json(updatedTodo); 
+
+  } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(404).send();
+    }
+    next(error);
+  }
+};
+
+
+
 module.exports = {
     createTodo,
     getTodos,
-    getTodoById
+    getTodoById,
+    updateTodo
 };
